@@ -15,7 +15,7 @@ public class UrlEntity {
 
     private String fullUrl;
 
-    @Indexed(expireAfter = "5d") String expireAfterOneDay;
+    @Indexed(expireAfter = "120s") String expireAfterTenSeconds;
     private LocalDateTime expireAt;
 
     public UrlEntity() {
