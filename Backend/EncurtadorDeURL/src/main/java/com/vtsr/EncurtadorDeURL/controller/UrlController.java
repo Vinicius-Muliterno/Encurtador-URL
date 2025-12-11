@@ -2,8 +2,10 @@ package com.vtsr.EncurtadorDeURL.controller;
 
 
 import com.vtsr.EncurtadorDeURL.controller.dto.ShortenUrlRequest;
+import com.vtsr.EncurtadorDeURL.controller.dto.ShortenUrlResponse;
 import com.vtsr.EncurtadorDeURL.entities.UrlEntity;
 import com.vtsr.EncurtadorDeURL.repository.UrlRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +25,8 @@ public class UrlController {
 
 
     @PostMapping(value = "/shorten-url")
-    public ResponseEntity <Void> shortenUrl(@RequestBody ShortenUrlRequest request){
+    public ResponseEntity <ShortenUrlResponse> shortenUrl(@RequestBody ShortenUrlRequest request, HttpServletRequest servletRequest){
+
         String id;
         do{
             id = RandomStringUtils.randomAlphanumeric(5,10 );
@@ -31,7 +34,10 @@ public class UrlController {
 
         urlRepository.save(new UrlEntity(id, request.url(), LocalDateTime.now().plusMinutes(1)));
 
-        return ResponseEntity.ok().build();
+        var redirectUrl = servletRequest.getRequestURL().toString().replace("shorten-url", id);
+
+
+        return ResponseEntity.ok(new ShortenUrlResponse(redirectUrl));
     }
 
 }
